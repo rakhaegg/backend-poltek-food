@@ -61,46 +61,64 @@ class DrinkService{
         const imageAsBase64 = fs.readFileSync(pathImage+'.jpg', 'base64');
         return result.rows.map(drink => ({id : drink.id , name : drink.name , price : drink.price  , image : imageAsBase64})) 
     }
-    async updateDrink(id , {name , price}){
+    async updateDrink(id ,credentialId ,  {name , price , image , id_shop}){
         const updatedAt = new Date().toISOString();
-        if (name == null){
+        console.log(id)
+
+        const checkImagequery = {
+            text: `SELECT  * FROM drinks
+            WHERE id = $1 `,
+            values: [id],
+        };
+        const resultCheckImageQuery = await this._pool.query(checkImagequery);
+        const pathImageCheckImageQuery = resultCheckImageQuery.rows[0].image   
+
+        const imageAsBase64 = fs.readFileSync(pathImageCheckImageQuery+'.jpg', 'base64');
+
+        if (imageAsBase64 == image){
             const query = {
-                text: 'UPDATE drinks SET price = $1, updated_at = $2 WHERE id = $3 RETURNING id',
-                values: [price, updatedAt, id],
+                text: 'UPDATE drinks SET name = $1, price = $2 ,  updated_at = $3 WHERE id = $4 RETURNING id',
+                values: [name,price ,  updatedAt, id],
             };
             const result = await this._pool.query(query);
-
-            if (!result.rows.length) {
-                throw new NotFoundError('Gagal memperbarui shops. Id tidak ditemukan');
-            }
-        }else if (price == null){
-            const query = {
-                text: 'UPDATE drinks SET name = $1, updated_at = $2 WHERE id = $3 RETURNING id',
-                values: [name, updatedAt, id],
-            };
-            const result = await this._pool.query(query);
-
+    
             if (!result.rows.length) {
                 throw new NotFoundError('Gagal memperbarui shops. Id tidak ditemukan');
             }
         }else{
+            const buffer = Buffer.from(image, "base64");
+            
+            fs.unlink(`image/${credentialId}/shop/drink/${id}.jpg` , (err) => {
+                if (err) throw err ;
+                console.log(err)
+            })
+
+            Jimp.read(buffer, (err, res) => {
+                if (err) throw new Error(err);
+    
+                res.quality(5).write(`image/${credentialId}/shop/drink/${id}.jpg`);
+            });
+            const nameFile  = `image/${credentialId}/shop/drink/${id}`
+
             const query = {
-                text: 'UPDATE drinks SET name = $1, price = $2 , updated_at = $3 WHERE id = $4 RETURNING id',
-                values: [name,price, updatedAt, id],
+                text: 'UPDATE drinks SET name = $1, price = $2 , image = $3 , updated_at = $4 WHERE id = $5 RETURNING id',
+                values: [name,price , nameFile, updatedAt, id],
             };
             const result = await this._pool.query(query);
-
+    
             if (!result.rows.length) {
                 throw new NotFoundError('Gagal memperbarui shops. Id tidak ditemukan');
             }
         }
+
+        
     }
-    async deleteDrink(id , idShop){
+    async deleteDrink(id , credentialId){
         const query = {
             text: 'DELETE FROM drinks WHERE id = $1 RETURNING id',
             values: [id],
         };
-        fs.unlink(`image/${idShop}/food/${id}.jpg` , (err) => {
+        fs.unlink(`image/${credentialId}/shop/drink/${id}.jpg` , (err) => {
             if (err) throw err ;
             console.log(err)
         })

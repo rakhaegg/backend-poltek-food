@@ -90,10 +90,10 @@ class DrinkHandler{
         try {
             const { id: credentialId } = request.auth.credentials;
             const { id } = request.params
-            const {id_shop , name , price} = request.payload
+            const {id_shop , name , price , image} = request.payload
 
             await this._service_shop.verifyShopOwner(id_shop, credentialId)
-            const shopId = await this._service_drink.updateDrink(id ,{name , price})
+            const shopId = await this._service_drink.updateDrink(id , credentialId , {name , price , image , id_shop})
             const response = h.response({
                 status: 'success',
                 message: 'Minuman berhasil DiUpdate',
@@ -123,7 +123,7 @@ class DrinkHandler{
             const { id } = request.params
             const {id_shop } = request.payload
             await this._service_shop.verifyShopOwner(id_shop  ,credentialId)
-            await this._service_drink.deleteDrink(id , id_shop)
+            await this._service_drink.deleteDrink(id , credentialId)
             const response = h.response({
                 status: 'success',
                 message: 'Minuman Berhasil Dihapus',
