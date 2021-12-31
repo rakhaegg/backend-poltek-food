@@ -90,11 +90,11 @@ class ShopHandler {
 
     async getShopHandler(request) {
         const { id: credentialId } = request.auth.credentials;
-        const notes = await this._service.getShops();
+        const user = await this._service.getShops();
         return {
             status: 'success',
             data: {
-                notes,
+                user,
             },
         };
     }

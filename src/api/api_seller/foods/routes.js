@@ -16,6 +16,12 @@ const routes = (handler) => [
     },
   },
   {
+    method: 'GET',
+    path: '/seller/shops/food/buyer/{id}',
+    handler: handler.getFoodsForBuyerHandler,
+    
+  },
+  {
     method: 'PUT',
     path: '/seller/shops/food/{id}',
     handler: handler.putShopHandler,

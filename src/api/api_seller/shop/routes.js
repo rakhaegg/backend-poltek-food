@@ -47,6 +47,7 @@ const routes = (handler) => [
       auth: 'pesan_antar_jwt',
     },
   },
+  
 ];
 
 module.exports = routes;

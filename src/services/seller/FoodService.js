@@ -64,6 +64,27 @@ class FoodService {
 
         return result.rows.map(food => ({ id: food.id, name: food.name, price: food.price , image: imageAsBase64 }))
     }
+    async getFoodById(owner) {
+        console.log(owner)
+
+        const query = {
+            text: `SELECT  * FROM foods
+            WHERE shops_id = $1 `,
+            values: [owner],
+        };
+
+        const result = await this._pool.query(query);
+        console.log(result)
+
+
+        const pathImage = result.rows[0].image   
+        if (!result.rows.length) {
+            throw new NotFoundError('Food tidak ditemukan');
+        }
+        const imageAsBase64 = fs.readFileSync(pathImage+'.jpg', 'base64');
+
+        return result.rows.map(food => ({ id: food.id, name: food.name, price: food.price , image: imageAsBase64 }))
+    }
 
     async updateFood(id, credentialId,  { name, price , image , id_shop}) {
         const updatedAt = new Date().toISOString();

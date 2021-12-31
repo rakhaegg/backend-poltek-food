@@ -12,8 +12,37 @@ class FoodsHandler {
         this.getFoodsHandler = this.getFoodsHandler.bind(this)
         this.putShopHandler = this.putShopHandler.bind(this)
         this.deleteFoodHandler = this.deleteFoodHandler.bind(this)
+        this.getFoodsForBuyerHandler = this.getFoodsForBuyerHandler.bind(this)
     }
-
+    async getFoodsForBuyerHandler (request , h){
+        
+        try {
+            const { id: shops_id } = request.params
+        
+            const food = await this._service_food.getFoodById(shops_id);
+            return {
+                status: 'success',
+                data: {
+                    food,
+                },
+            };
+        } catch (error) {
+            if (error instanceof ClientError) {
+                const response = h.response({
+                    status: 'fail',
+                    message: error.message,
+                });
+                response.code(error.statusCode);
+                return response;
+            }
+            const response = h.response({
+                status: 'fail',
+                message: 'Maaf, terjadi kegagalan pada server kami.',
+            });
+            response.code(400);
+            console.error(error);
+        }
+    }
     async postFoodHandler(request, h) {
         try {
             this._validator.validateFoodPayload(request.payload)
