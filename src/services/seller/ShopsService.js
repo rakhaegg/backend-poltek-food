@@ -12,6 +12,19 @@ class ShopsService {
         this._pool = new Pool()
     }
 
+    async checkShop(credentialId)  {
+        console.log(credentialId)
+        const query = {
+            text: 'SELECT * FROM shops WHERE owner = $1',
+            values: [credentialId]
+        }
+        const result = await this._pool.query(query)
+        if (!result.rows.length) {
+            throw new NotFoundError('Shop tidak ditemukan');
+        }
+        return result.rows.map(shop => ({id : shop.id}))
+    }
+
     async addShop({ name, address, no_phone, owner, image }) {
         const queryToCheckOwner = {
             text: 'SELECT * FROM shops WHERE name = $1',

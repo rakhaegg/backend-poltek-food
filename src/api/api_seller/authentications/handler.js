@@ -31,6 +31,7 @@ class AuthenticationsHandler {
         data: {
           accessToken,
           refreshToken,
+          id
         },
       });
       response.code(201);

@@ -39,6 +39,14 @@ const routes = (handler) => [
       auth: 'pesan_antar_jwt',
     },
   },
+  {
+    method: 'GET',
+    path: '/seller/shops/check',
+    handler: handler.checkShopHandler,
+    options: {
+      auth: 'pesan_antar_jwt',
+    },
+  },
 ];
 
 module.exports = routes;
