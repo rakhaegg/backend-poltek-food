@@ -11,9 +11,37 @@ class DrinkHandler{
         this.getDrinkHandler = this.getDrinkHandler.bind(this)
         this.putDrinkHandler = this.putDrinkHandler.bind(this)
         this.deleteDrinksHandler = this.deleteDrinksHandler.bind(this)
-    
+        this.getDrinkForBuyerHandler = this.getDrinkForBuyerHandler.bind(this)
     }
-
+    async getDrinkForBuyerHandler (request , h){
+        
+        try {
+            const { id: shops_id } = request.params
+        
+            const drink = await this._service_drink.getDrink(shops_id);
+            return {
+                status: 'success',
+                data: {
+                    drink,
+                },
+            };
+        } catch (error) {
+            if (error instanceof ClientError) {
+                const response = h.response({
+                    status: 'fail',
+                    message: error.message,
+                });
+                response.code(error.statusCode);
+                return response;
+            }
+            const response = h.response({
+                status: 'fail',
+                message: 'Maaf, terjadi kegagalan pada server kami.',
+            });
+            response.code(400);
+            console.error(error);
+        }
+    }
     async postDrinkHandler(request , h){
         try {
             this._validator.validateDrinkPayload(request.payload)

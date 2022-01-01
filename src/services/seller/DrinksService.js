@@ -53,13 +53,12 @@ class DrinkService{
             values: [owner],
         };
         const result = await this._pool.query(query);
-        const pathImage = result.rows[0].image
         
         if (!result.rows.length) {
             throw new NotFoundError('Drink tidak ditemukan');
         }
-        const imageAsBase64 = fs.readFileSync(pathImage+'.jpg', 'base64');
-        return result.rows.map(drink => ({id : drink.id , name : drink.name , price : drink.price  , image : imageAsBase64})) 
+  
+        return result.rows.map(drink => ({id : drink.id , name : drink.name , price : drink.price  , image :  fs.readFileSync(drink.image+'.jpg', 'base64')})) 
     }
     async updateDrink(id ,credentialId ,  {name , price , image , id_shop}){
         const updatedAt = new Date().toISOString();

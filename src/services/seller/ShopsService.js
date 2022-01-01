@@ -81,11 +81,9 @@ class ShopsService {
         if (!result.rows.length) {
             throw new NotFoundError('Shop tidak ditemukan');
         }
-        const pathImage = result.rows[0].image
+  
 
-        const imageAsBase64 = fs.readFileSync(pathImage + '.jpg', 'base64');
-
-        return result.rows.map(shop => ({ id: shop.id, name: shop.name, address: shop.address, no_phone: shop.no_phone, image: imageAsBase64 }))
+        return result.rows.map(shop => ({ id: shop.id, name: shop.name, address: shop.address, no_phone: shop.no_phone, image: fs.readFileSync(shop.image + '.jpg', 'base64') }))
     }
     async getShopById(owner) {
         const query = {
@@ -96,10 +94,10 @@ class ShopsService {
         if (!result.rows.length) {
             throw new NotFoundError('Shop tidak ditemukan');
         }
-        const pathImage = result.rows[0].image
-
+        const pathImage = result.rows.image
+            
         const imageAsBase64 = fs.readFileSync(pathImage + '.jpg', 'base64');
-        return result.rows.map(shop => ({ id: shop.id, name: shop.name, no_phone: shop.no_phone, image: imageAsBase64 }))
+        return result.rows.map(shop => ({ id: shop.id, name: shop.name, no_phone: shop.no_phone, address : shop.address , image: imageAsBase64 }))
     }
 
     async editShosById(id,credentialId,  { name, address, no_phone, image }) {

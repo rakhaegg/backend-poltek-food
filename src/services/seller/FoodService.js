@@ -55,14 +55,11 @@ class FoodService {
         };
         const result = await this._pool.query(query);
 
-
-        const pathImage = result.rows[0].image   
         if (!result.rows.length) {
             throw new NotFoundError('Food tidak ditemukan');
         }
-        const imageAsBase64 = fs.readFileSync(pathImage+'.jpg', 'base64');
 
-        return result.rows.map(food => ({ id: food.id, name: food.name, price: food.price , image: imageAsBase64 }))
+        return result.rows.map(food => ({ id: food.id, name: food.name, price: food.price , image: fs.readFileSync(food.image+'.jpg', 'base64') }))
     }
     async getFoodById(owner) {
         console.log(owner)
@@ -74,16 +71,14 @@ class FoodService {
         };
 
         const result = await this._pool.query(query);
-        console.log(result)
 
 
-        const pathImage = result.rows[0].image   
         if (!result.rows.length) {
             throw new NotFoundError('Food tidak ditemukan');
         }
-        const imageAsBase64 = fs.readFileSync(pathImage+'.jpg', 'base64');
 
-        return result.rows.map(food => ({ id: food.id, name: food.name, price: food.price , image: imageAsBase64 }))
+
+        return result.rows.map(food => ({ id: food.id, name: food.name, price: food.price , image: fs.readFileSync(food.image+'.jpg', 'base64')}))
     }
 
     async updateFood(id, credentialId,  { name, price , image , id_shop}) {

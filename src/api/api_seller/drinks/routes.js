@@ -31,6 +31,12 @@ const routes = (handler) => [
       auth: 'pesan_antar_jwt',
     },
   },
+  {
+    method: 'GET',
+    path: '/seller/shops/drink/buyer/{id}',
+    handler: handler.getDrinkForBuyerHandler,
+    
+  },
 ];
 
 module.exports = routes;
