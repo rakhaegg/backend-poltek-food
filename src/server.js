@@ -49,6 +49,10 @@ const BiodataService = require('./services/driver/BiodatataService')
 const BiodataValidator = require('./validator/driver/biodata')
 
 
+//pesan 
+const pesan = require('./api/pesan')
+const PesanService  = require('./services/pesan/PesanService')
+
 // authentications
 
 const AuthenticationsService = require('./services/AuthenticationsService')
@@ -66,6 +70,7 @@ const init = async () => {
     const buyerService = new BuyersService()
     const driverService = new DriverService()
     const biodataService = new BiodataService()
+    const pesanService = new PesanService()
     const authenticationsService = new AuthenticationsService();
 
     const server = Hapi.server({
@@ -108,6 +113,12 @@ const init = async () => {
             options: {
                 service: driverService,
                 validator: DriversValidator
+            }
+        },
+        {
+            plugin: pesan,
+            options: {
+                service: pesanService,
             }
         },
         {
