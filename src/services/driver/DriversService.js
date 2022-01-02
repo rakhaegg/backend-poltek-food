@@ -43,7 +43,6 @@ class DriverService {
     }
 
     async putIsReady(status, driverId) {
-        console.log(status)
         const query = {
             text: 'UPDATE drivers SET is_ready = $1  WHERE id = $2',
             values: [status, driverId],
